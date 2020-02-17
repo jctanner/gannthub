@@ -1,2 +1,4 @@
-# gannthub
-gannt charts for us lazy people
+# gantthub
+gantt charts for us lazy people
+
+https://developers.google.com/chart/interactive/docs/gallery/ganttchart
