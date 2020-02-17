@@ -1,0 +1,9 @@
+{
+    "task_id": "foo",
+    "task_name": "foosballz",
+    "start_date": "2020-03-11",
+    "end_date": "2020-03-20",
+    "duration": 4,
+    "percent_complete": 0,
+    "dependencies": "bar,baz"
+}
