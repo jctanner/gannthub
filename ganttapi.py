@@ -33,7 +33,7 @@ class GanttApi:
         self.tasks = []
         dfs = glob.glob('%s/*.json' % self.datadir)
         for df in dfs:
-            print(df)
+            print('read %s' % df)
             with open(df, 'r') as f:
                 self.tasks.append(json.loads(f.read()))
         print(self.tasks)
@@ -54,7 +54,7 @@ class GanttApi:
                     return task
         
         if projectid:
-            return [x for x in self.tasks if x.get('project_id') == projectid]
+            return [x for x in self.tasks if x.get('projectid') == projectid]
 
         if taskid:
             for task in self.tasks:
@@ -65,6 +65,12 @@ class GanttApi:
             return self.tasks[:]
 
         return []
+    
+    def get_task(self, taskid=None):
+        for task in self.tasks:
+            if task['task_id'] == taskid:
+                return task
+        return None
 
     def get_project(self, projectid=None):
         for task in self.tasks:
@@ -85,9 +91,16 @@ class GanttApi:
                 'dependencies': dependencies,
             }))
         self.load_data()
+    
+    def delete_project(self, projectid=None):
+        pfiles = glob.glob('%s/project_%s*' % (self.datadir, projectid))
+        for pfile in pfiles:
+            print('deleting %s' % pfile)
+            os.remove(pfile)
+        self.load_data()
 
     def add_task(self, projectid=None, taskid=None, taskname=None, startdate=None, enddate=None, duration=None, dependencies=None):
-        fn = os.path.join(self.datadir, 'proj_%s_task_%s.json' % (projectid, taskid))
+        fn = os.path.join(self.datadir, 'project_%s_task_%s.json' % (projectid, taskid))
         with open(fn, 'w') as f:
             f.write(json.dumps({
                 'project': False,
