@@ -79,13 +79,14 @@ class GanttApi:
             if task.get('project') and task['task_id'] == projectid:
                 return task
 
-    def add_project(self, projectid=None, projectname=None, trackerurl=None, startdate=None, enddate=None, duration=None, percentcomplete=None, dependencies=None):
+    def add_project(self, projectid=None, projectname=None, resource=None, trackerurl=None, startdate=None, enddate=None, duration=None, percentcomplete=None, dependencies=None):
         fn = os.path.join(self.datadir, 'project_%s.json' % projectid)
         with open(fn, 'w') as f:
             f.write(json.dumps({
                 'project': True,
                 'task_id': projectid,
                 'task_name': projectname,
+                'resource_group': resource or '',
                 'tracker_url': trackerurl,
                 'start_date': startdate,
                 'end_date': enddate,
@@ -102,7 +103,7 @@ class GanttApi:
             os.remove(pfile)
         self.load_data()
 
-    def add_task(self, projectid=None, taskid=None, taskname=None, trackerurl=None, startdate=None, enddate=None, duration=None, percentcomplete=None, dependencies=None):
+    def add_task(self, projectid=None, taskid=None, taskname=None, resource=None, trackerurl=None, startdate=None, enddate=None, duration=None, percentcomplete=None, dependencies=None):
         fn = os.path.join(self.datadir, 'project_%s_task_%s.json' % (projectid, taskid))
         with open(fn, 'w') as f:
             f.write(json.dumps({
@@ -110,6 +111,7 @@ class GanttApi:
                 'projectid': projectid,
                 'task_id': taskid,
                 'task_name': taskname,
+                'resource_group': resource or '',
                 'tracker_url': trackerurl,
                 'start_date': startdate,
                 'end_date': enddate,

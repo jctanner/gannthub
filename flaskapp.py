@@ -59,6 +59,7 @@ class LoginForm(FlaskForm):
 class AddProjectForm(FlaskForm):
     projectid = StringField(label='project id')
     projectname = StringField(label='project name')
+    resource = StringField(label='resource group')
     trackerurl = StringField(label='tracker url')
     startdate = StringField(label='start date')
     enddate = StringField(label='end date')
@@ -72,6 +73,7 @@ class AddTaskForm(FlaskForm):
     projectid = StringField(label='project id')
     taskid = StringField(label='task id')
     taskname = StringField(label='task name')
+    resource = StringField(label='resource group')
     trackerurl = StringField(label='tracker url')
     startdate = StringField(label='start date')
     enddate = StringField(label='end date')
@@ -156,6 +158,7 @@ def edit_project(projectid):
     form = AddProjectForm(
         projectid=projectid,
         projectname=project['task_name'],
+        resource=project.get('resource_group', ''),
         trackerurl=project.get('tracker_url', ''),
         startdate=project['start_date'],
         enddate=project['end_date'],
@@ -209,6 +212,7 @@ def edit_task(projectid):
         projectid=task['project_id'],
         taskid=task['task_id'],
         projectname=task['task_name'],
+        resource=task.get('resource_group', ''),
         trackerurl=task.get('tracker_url', ''),
         startdate=task['start_date'],
         enddate=task['end_date'],
@@ -233,6 +237,7 @@ def task_view(taskid):
         projectid=task['projectid'],
         taskid=taskid,
         taskname=task['task_name'],
+        resource=task.get('resource_group', ''),
         trackerurl=task.get('tracker_url', ''),
         startdate=task['start_date'],
         enddate=task['end_date'],
