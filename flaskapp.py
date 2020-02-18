@@ -63,6 +63,7 @@ class AddProjectForm(FlaskForm):
     startdate = StringField(label='start date')
     enddate = StringField(label='end date')
     duration = IntegerField(label='duration')
+    percentcomplete = IntegerField(label='percent complete')
     dependencies = StringField(label='dependencies')
     submit = SubmitField(label='save')
 
@@ -75,6 +76,7 @@ class AddTaskForm(FlaskForm):
     startdate = StringField(label='start date')
     enddate = StringField(label='end date')
     duration = IntegerField(label='duration')
+    percentcomplete = IntegerField(label='percent complete')
     dependencies = StringField(label='dependencies')
     submit = SubmitField(label='save')
 
@@ -158,6 +160,7 @@ def edit_project(projectid):
         startdate=project['start_date'],
         enddate=project['end_date'],
         duration=project['duration'],
+        percentcomplete=project.get('percent_complete', 0),
         dependencies=project['dependencies']
     )
 
@@ -210,6 +213,7 @@ def edit_task(projectid):
         startdate=task['start_date'],
         enddate=task['end_date'],
         duration=task['duration'],
+        percentcomplete=task.get('percent_complete', 0),
         dependencies=task['dependencies']
     )
 
@@ -233,6 +237,7 @@ def task_view(taskid):
         startdate=task['start_date'],
         enddate=task['end_date'],
         duration=task['duration'],
+        percentcomplete=task.get('percent_complete', 0),
         dependencies=task['dependencies']
     )
     return render_template('task.html', api=api, task=task, form=form)
