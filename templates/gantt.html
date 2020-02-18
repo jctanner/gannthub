@@ -30,8 +30,10 @@
         ],
         {% endfor %}]);
 
+        var trackHeight = 50;
+
         var options = {
-        height: 275,
+        height: data.getNumberOfRows() * trackHeight,
         gantt: {
             criticalPathEnabled: true,
             criticalPathStyle: {

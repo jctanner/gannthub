@@ -79,6 +79,17 @@ class AddTaskForm(FlaskForm):
     submit = SubmitField(label='save')
 
 
+@app.template_filter()
+def split_ymd(ds, ix=None):
+    ds = ds.split('-')
+    if ix is None:
+        return ds
+    try:
+        return ds[ix]
+    except IndexError:
+        return 0
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return User(user_id)
@@ -107,14 +118,6 @@ def login():
 def logout():
     logout_user()
     return redirect('/')
-
-
-@app.template_filter()
-def split_ymd(ds, ix=None):
-    ds = ds.split('-')
-    if ix is None:
-        return ds
-    return ds[ix]
 
 
 @app.route('/')
