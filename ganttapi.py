@@ -44,6 +44,7 @@ class GanttApi:
         if not isinstance(self.tasks, list):
             return []
         projects = [x for x in self.tasks if x.get('project') == True]
+        projects = sorted(projects, key=lambda x: x['task_name'])
         return projects
 
     def get_tasks(self, projectid=None, taskid=None):
@@ -87,8 +88,34 @@ class GanttApi:
         print('#############################')
 
         if current_projectid:
+            # kill the old file
             fn = os.path.join(self.datadir, 'project_%s.json' % current_projectid)
             os.remove(fn)
+
+            # fix all the other files
+            tofix = glob.glob('%s/*.json' % self.datadir)
+            for tf in tofix:
+                with open(tf, 'r') as f:
+                    jdata = json.loads(f.read())
+                changed = False
+                if jdata.get('projectid') == current_projectid:
+                    jdata['projectid'] = projectid
+                    changed = True
+                _dependencies = jdata.get('dependencies', '').split(',')
+                if current_projectid in _dependencies:
+                    _dependencies.remove(current_projectid)
+                    _dependencies.append(projectid)
+                    jdata['dependencies'] = ','.join(_dependencies)
+                    changed = True
+                if changed:
+                    os.remove(tf)
+                    if jdata.get('project') == True:
+                        nf = os.path.join(self.datadir, 'project_%s.json' % jdata['task_id'])
+                    else:
+                        nf = os.path.join(self.datadir, 'project_%s_task_%s.json' % (jdata['projectid'], jdata['task_id']))
+                    with open(nf, 'w') as f:
+                        f.write(json.dumps(jdata, indent=2, sort_keys=True))
+
         
         fn = os.path.join(self.datadir, 'project_%s.json' % projectid)
         with open(fn, 'w') as f:

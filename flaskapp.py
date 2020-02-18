@@ -141,7 +141,7 @@ def add_project():
         api.add_project(**kwargs)
         return redirect('/')
 
-    return render_template('addproject.html', api=api, form=form)
+    return render_template('project_add.html', api=api, form=form)
 
 
 @app.route('/deleteproject/<string:projectid>', methods=['GET', 'POST'])
