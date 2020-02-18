@@ -1,6 +1,6 @@
 {% include 'header.html' %}
 <h2>Edit task ...</h2>
-<form method="POST" action="/edittask">
+<form method="POST" action="/tasks/{{task.task_id}}">
     <table border="0" width="40%">
         <tr>
             <td>{{ form.projectid.label }}</td>

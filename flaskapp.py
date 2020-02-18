@@ -195,6 +195,30 @@ def add_task(projectid=None):
     return render_template('addtask.html', api=api, form=form)
 
 
+@app.route('/edittask/<string:taskid>', methods=['GET', 'POST'])
+@login_required
+def edit_task(projectid):
+    task = api.get_project(taskid=taskid)
+    form = AddTaskForm(
+        projectid=task['project_id'],
+        taskid=task['task_id'],
+        projectname=task['task_name'],
+        trackerurl=task.get('tracker_url', ''),
+        startdate=task['start_date'],
+        enddate=task['end_date'],
+        duration=task['duration'],
+        dependencies=task['dependencies']
+    )
+
+    if request.method == 'POST':
+        kwargs = copy.deepcopy(form.data)
+        kwargs.pop('csrf_token', None)
+        kwargs.pop('submit', None)
+        api.add_task(**kwargs)
+        return redirect('/')
+
+    return render_template('task.html', api=api, form=form)
+
 @app.route('/tasks/<string:taskid>', methods=['GET', 'POST'])
 def task_view(taskid):
     task = api.get_task(taskid=taskid)
