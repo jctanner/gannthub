@@ -42,6 +42,7 @@ def index():
 class AddProjectForm(FlaskForm):
     projectid = StringField(label='project id')
     projectname = StringField(label='project name')
+    trackerurl = StringField(label='tracker url')
     startdate = StringField(label='start date')
     enddate = StringField(label='end date')
     duration = IntegerField(label='duration')
@@ -53,6 +54,7 @@ class AddTaskForm(FlaskForm):
     projectid = StringField(label='project id')
     taskid = StringField(label='task id')
     taskname = StringField(label='task name')
+    trackerurl = StringField(label='tracker url')
     startdate = StringField(label='start date')
     enddate = StringField(label='end date')
     duration = IntegerField(label='duration')
@@ -86,6 +88,7 @@ def edit_project(projectid):
     form = AddProjectForm(
         projectid=projectid,
         projectname=project['task_name'],
+        trackerurl=project.get('tracker_url', ''),
         startdate=project['start_date'],
         enddate=project['end_date'],
         duration=project['duration'],
@@ -135,6 +138,7 @@ def task_view(taskid):
         projectid=task['projectid'],
         taskid=taskid,
         taskname=task['task_name'],
+        trackerurl=task.get('tracker_url', ''),
         startdate=task['start_date'],
         enddate=task['end_date'],
         duration=task['duration'],
