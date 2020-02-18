@@ -140,12 +140,35 @@ class GanttApi:
             os.remove(pfile)
         self.load_data()
 
-    def add_task(self, projectid=None, taskid=None, current_task_id=None, taskname=None, resource=None, trackerurl=None, startdate=None, enddate=None, duration=None, percentcomplete=None, dependencies=None):
+    def add_task(self, projectid=None, taskid=None, current_taskid=None, taskname=None, resource=None, trackerurl=None, startdate=None, enddate=None, duration=None, percentcomplete=None, dependencies=None):
         
         # re-id a task ...
-        if current_task_id:
-            fn = os.path.join(self.datadir, 'project_%s_task_%s.json' % (projectid, current_task_id))
+        if current_taskid:
+            fn = os.path.join(self.datadir, 'project_%s_task_%s.json' % (projectid, current_taskid))
             os.remove(fn)
+
+            # fix all the other files
+            tofix = glob.glob('%s/project_*_task_*.json' % self.datadir)
+            for tf in tofix:
+                with open(tf, 'r') as f:
+                    jdata = json.loads(f.read())
+                if jdata.get('project') == True:
+                    continue
+                changed = False
+                if jdata.get('task_id') == current_taskid:
+                    jdata['task_id'] = taskid
+                    changed = True
+                _dependencies = jdata.get('dependencies', '').split(',')
+                if current_taskid in _dependencies:
+                    _dependencies.remove(current_taskid)
+                    _dependencies.append(taskid)
+                    jdata['dependencies'] = ','.join(_dependencies)
+                    changed = True
+                if changed:
+                    os.remove(tf)
+                    nf = os.path.join(self.datadir, 'project_%s_task_%s.json' % (jdata['projectid'], jdata['task_id']))
+                    with open(nf, 'w') as f:
+                        f.write(json.dumps(jdata, indent=2, sort_keys=True))
         
         fn = os.path.join(self.datadir, 'project_%s_task_%s.json' % (projectid, taskid))
         with open(fn, 'w') as f:

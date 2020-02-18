@@ -201,7 +201,10 @@ def add_task(projectid=None):
         kwargs.pop('csrf_token', None)
         kwargs.pop('submit', None)
         api.add_task(**kwargs)
-        return redirect('/')
+        if projectid:
+            return redirect('/projects/%s' % projectid)
+        else:
+            return redirect('/')
 
     return render_template('task_add.html', api=api, form=form)
 
@@ -209,9 +212,9 @@ def add_task(projectid=None):
 @app.route('/edittask/<string:taskid>', methods=['GET', 'POST'])
 @login_required
 def edit_task(taskid):
-    task = api.get_project(taskid=taskid)
+    task = api.get_task(taskid=taskid)
     form = AddTaskForm(
-        projectid=task['project_id'],
+        projectid=task['projectid'],
         taskid=task['task_id'],
         projectname=task['task_name'],
         resource=task.get('resource_group', ''),
@@ -227,9 +230,9 @@ def edit_task(taskid):
         kwargs = copy.deepcopy(form.data)
         kwargs.pop('csrf_token', None)
         kwargs.pop('submit', None)
-        kwargs['current_task_id'] = taskid
+        kwargs['current_taskid'] = taskid
         api.add_task(**kwargs)
-        return redirect('/')
+        return redirect('/projects/%s' % task['projectid'])
 
     return render_template('task_view.html', api=api, form=form)
 
