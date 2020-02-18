@@ -1,17 +1,25 @@
 #!/usr/bin/env python
 
+import copy
+
 from flask import Flask
 from flask import jsonify
+from flask import redirect
 from flask import render_template
 from flask import request
 
+from flask_wtf import FlaskForm
 from flask_wtf.csrf import CSRFProtect
+from wtforms import IntegerField
+from wtforms import StringField
+from wtforms import SubmitField
 
 from ganttapi import GanttApi
 
 
 app = Flask(__name__)
 csrf = CSRFProtect(app)
+app.config['SECRET_KEY'] = '011111'
 api = GanttApi()
 
 
@@ -25,12 +33,86 @@ def split_ymd(ds, ix=None):
 
 @app.route('/')
 def index():
-    return render_template('index.html', tasks=api.get_tasks())
+    return render_template('index.html', api=api, tasks=api.get_projects())
 
+
+class AddProjectForm(FlaskForm):
+    projectid = StringField(label='project id')
+    projectname = StringField(label='project name')
+    startdate = StringField(label='start date')
+    enddate = StringField(label='end date')
+    duration = IntegerField(label='duration')
+    dependencies = StringField(label='dependencies')
+    submit = SubmitField(label='add')
+
+
+class AddTaskForm(FlaskForm):
+    projectid = StringField(label='project id')
+    taskid = StringField(label='task id')
+    taskname = StringField(label='task name')
+    startdate = StringField(label='start date')
+    enddate = StringField(label='end date')
+    duration = IntegerField(label='duration')
+    dependencies = StringField(label='dependencies')
+    submit = SubmitField(label='add')
+
+
+@app.route('/addproject', methods=['GET', 'POST'])
+def add_project():
+    form = AddProjectForm()
+
+    if request.method == 'POST':
+        kwargs = copy.deepcopy(form.data)
+        kwargs.pop('csrf_token', None)
+        kwargs.pop('submit', None)
+        api.add_project(**kwargs)
+        return redirect('/')
+
+    return render_template('addproject.html', api=api, form=form)
+
+
+@app.route('/projects/<string:projectid>')
+def project_view(projectid):
+    project = api.get_project(projectid=projectid)
+    tasks = api.get_tasks(projectid=projectid)
+    return render_template('project.html', api=api, project=project, projectid=projectid, tasks=tasks)
+
+
+@app.route('/addtask', methods=['GET', 'POST'])
+def add_task():
+    form = AddTaskForm()
+
+    if request.method == 'POST':
+        kwargs = copy.deepcopy(form.data)
+        kwargs.pop('csrf_token', None)
+        kwargs.pop('submit', None)
+        api.add_task(**kwargs)
+        return redirect('/')
+
+    return render_template('addtask.html', api=api, form=form)
+
+####################################################
+#   API FUNCTIONS
+####################################################
 
 @app.route('/api')
 def api_root():
     return jsonify(['/api/tasks'])
+
+
+@app.route('/api/projects')
+def api_projects_root():
+    return jsonify(api.get_projects())
+
+
+@app.route('/api/projects/<string:projectid>')
+def api_project(projectid):
+    return jsonify(api.get_projects(projectid=projectid))
+
+
+@app.route('/api/projects/<string:projectid>/tasks')
+def api_project_tasks(projectid):
+    return jsonify(api.get_tasks(projectid=projectid))
 
 
 @app.route('/api/tasks')

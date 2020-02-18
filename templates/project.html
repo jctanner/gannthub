@@ -8,18 +8,20 @@
     <table class="table table-striped table-hover table-sm">
         <thead class="thead-dark">
             <tr>
-                <th scope="col">projects</th>
+                <th scope="col">tasks</th>
             </tr>
         </thead>
         <tbody>
-        {% for project in api.get_projects() %}
+        {% for task in tasks %}
             <tr>
-                <td><a href='/projects/{{ project.task_id }}'>{{ project.task_name }}</a></td>
+                <td><a href='/tasks/{{ task.task_id }}'>{{ task.task_name }}</a></td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-    <a class="btn btn-primary" href="/addproject">add project</a>
+    <a class="btn btn-primary" href="/deleteproject/{{project.task_id}}">delete</a>
+    <a class="btn btn-primary" href="/editproject/{{project.task_id}}">edit</a>
+    <a class="btn btn-primary" href="/addtask">add task</a>
 </div>
 
 {% include 'footer.html' %}

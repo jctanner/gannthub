@@ -1,0 +1,40 @@
+{% include 'header.html' %}
+<h2>Add a new task ...</h2>
+<form method="POST" action="/addtask">
+    <table border="0" width="40%">
+        <tr>
+            <td>{{ form.projectid.label }}</td>
+            <td>{{ form.projectid }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.taskid.label }}</td>
+            <td>{{ form.taskid }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.taskname.label }}</td>
+            <td>{{ form.taskname }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.startdate.label }}</td>
+            <td>{{ form.startdate }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.enddate.label }}</td>
+            <td>{{ form.enddate }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.duration.label }}</td>
+            <td>{{ form.duration }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.dependencies.label }}</td>
+            <td>{{ form.dependencies }}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>{{ form.submit }}</td>
+        </tr>
+    </table>
+    {{ form.csrf_token }}
+</form>
+{% include 'footer.html' %}
