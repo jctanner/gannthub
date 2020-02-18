@@ -2,20 +2,29 @@
 
 import copy
 
+from flask import abort
 from flask import Flask
 from flask import jsonify
+from flask import Response
 from flask import redirect
 from flask import render_template
 from flask import request
 
+from flask_login import LoginManager
+from flask_login import LoginManager
+from flask_login import UserMixin
+from flask_login import login_required
+from flask_login import login_user
+from flask_login import logout_user 
+
 from flask_wtf import FlaskForm
 from flask_wtf.csrf import CSRFProtect
 from wtforms import IntegerField
+from wtforms import PasswordField
 from wtforms import StringField
 from wtforms import SubmitField
 
 from ganttapi import GanttApi
-
 
 from pprint import pprint
 
@@ -23,20 +32,28 @@ from pprint import pprint
 app = Flask(__name__)
 csrf = CSRFProtect(app)
 app.config['SECRET_KEY'] = '011111'
+login_manager = LoginManager(app)
+login_manager.login_view = "login"
 api = GanttApi()
 
+class User(UserMixin):
 
-@app.template_filter()
-def split_ymd(ds, ix=None):
-    ds = ds.split('-')
-    if ix is None:
-        return ds
-    return ds[ix]
+    def __init__(self, id):
+        self.id = id
+        self.name = "user" + str(id)
+        self.password = self.name + "_secret"
+        print('id: %s' % self.id)
+        print('name: %s' % self.name)
+        print('password: %s' % self.password)
+        
+    def __repr__(self):
+        return "%d/%s/%s" % (self.id, self.name, self.password)
 
 
-@app.route('/')
-def index():
-    return render_template('index.html', api=api, tasks=api.get_projects())
+class LoginForm(FlaskForm):
+    username = StringField(label='username')
+    password = PasswordField(label='password')
+    submit = SubmitField(label='login')
 
 
 class AddProjectForm(FlaskForm):
@@ -62,7 +79,51 @@ class AddTaskForm(FlaskForm):
     submit = SubmitField(label='save')
 
 
+@login_manager.user_loader
+def load_user(user_id):
+    return User(user_id)
+
+
+# somewhere to login
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    form = LoginForm()
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']        
+        if password == username + "_secret":
+            id = username.split('user')[1]
+            user = User(id)
+            login_user(user)
+            return redirect('/')
+        else:
+            return abort(401)
+    else:
+        return render_template('login.html', form=form)
+
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect('/')
+
+
+@app.template_filter()
+def split_ymd(ds, ix=None):
+    ds = ds.split('-')
+    if ix is None:
+        return ds
+    return ds[ix]
+
+
+@app.route('/')
+def index():
+    return render_template('index.html', api=api, tasks=api.get_projects())
+
+
 @app.route('/addproject', methods=['GET', 'POST'])
+@login_required
 def add_project():
     form = AddProjectForm()
 
@@ -77,12 +138,14 @@ def add_project():
 
 
 @app.route('/deleteproject/<string:projectid>', methods=['GET', 'POST'])
+@login_required
 def delete_project(projectid):
     api.delete_project(projectid=projectid)
     return redirect('/')
 
 
 @app.route('/editproject/<string:projectid>', methods=['GET', 'POST'])
+@login_required
 def edit_project(projectid):
     project = api.get_project(projectid=projectid)
     form = AddProjectForm(
@@ -115,6 +178,7 @@ def project_view(projectid):
 
 @app.route('/addtask', methods=['GET', 'POST'])
 @app.route('/addtask/<string:projectid>', methods=['GET', 'POST'])
+@login_required
 def add_task(projectid=None):
     if projectid:
         form = AddTaskForm(projectid=projectid)
