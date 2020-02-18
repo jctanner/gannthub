@@ -30,6 +30,8 @@ class GanttApi:
         self.load_data()
     
     def load_data(self):
+        if not os.path.exists(self.datadir):
+            os.makedirs(self.datadir)
         self.tasks = []
         dfs = glob.glob('%s/*.json' % self.datadir)
         for df in dfs:
