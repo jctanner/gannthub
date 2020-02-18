@@ -171,10 +171,12 @@ def edit_project(projectid):
         kwargs = copy.deepcopy(form.data)
         kwargs.pop('csrf_token', None)
         kwargs.pop('submit', None)
+        kwargs['current_projectid'] = projectid
+        pprint(kwargs)
         api.add_project(**kwargs)
         return redirect('/')
 
-    return render_template('addproject.html', api=api, form=form)
+    return render_template('project_edit.html', api=api, form=form, projectid=projectid)
 
 
 @app.route('/projects/<string:projectid>')
@@ -182,7 +184,7 @@ def project_view(projectid):
     project = api.get_project(projectid=projectid)
     tasks = api.get_tasks(projectid=projectid)
     pprint(tasks)
-    return render_template('project.html', api=api, project=project, projectid=projectid, tasks=tasks)
+    return render_template('project_view.html', api=api, project=project, projectid=projectid, tasks=tasks)
 
 
 @app.route('/addtask', methods=['GET', 'POST'])
@@ -201,12 +203,12 @@ def add_task(projectid=None):
         api.add_task(**kwargs)
         return redirect('/')
 
-    return render_template('addtask.html', api=api, form=form)
+    return render_template('task_add.html', api=api, form=form)
 
 
 @app.route('/edittask/<string:taskid>', methods=['GET', 'POST'])
 @login_required
-def edit_task(projectid):
+def edit_task(taskid):
     task = api.get_project(taskid=taskid)
     form = AddTaskForm(
         projectid=task['project_id'],
@@ -225,10 +227,11 @@ def edit_task(projectid):
         kwargs = copy.deepcopy(form.data)
         kwargs.pop('csrf_token', None)
         kwargs.pop('submit', None)
+        kwargs['current_task_id'] = taskid
         api.add_task(**kwargs)
         return redirect('/')
 
-    return render_template('task.html', api=api, form=form)
+    return render_template('task_view.html', api=api, form=form)
 
 @app.route('/tasks/<string:taskid>', methods=['GET', 'POST'])
 def task_view(taskid):
@@ -245,7 +248,7 @@ def task_view(taskid):
         percentcomplete=task.get('percent_complete', 0),
         dependencies=task['dependencies']
     )
-    return render_template('task.html', api=api, task=task, form=form)
+    return render_template('task_view.html', api=api, task=task, form=form)
 
 
 ####################################################
