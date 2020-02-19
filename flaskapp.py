@@ -213,6 +213,8 @@ def add_task(projectid=None):
         kwargs = copy.deepcopy(form.data)
         kwargs.pop('csrf_token', None)
         kwargs.pop('submit', None)
+        if projectid is None:
+            projectid = kwargs.get('projectid')
         api.add_task(**kwargs)
         if projectid:
             return redirect('/projects/%s' % projectid)
@@ -263,21 +265,6 @@ def delete_task(taskid):
 @app.route('/tasks/<string:taskid>', methods=['GET', 'POST'])
 def task_view(taskid):
     task = api.get_task(taskid=taskid)
-    '''
-    form = AddTaskForm(
-        projectid=task['projectid'],
-        taskid=taskid,
-        taskname=task['task_name'],
-        resource=task.get('resource_group', ''),
-        trackerurl=task.get('tracker_url', ''),
-        startdate=task['start_date'],
-        enddate=task['end_date'],
-        duration=task['duration'],
-        percentcomplete=task.get('percent_complete', 0),
-        dependencies=task['dependencies'],
-        info=task.get('info')
-    )
-    '''
     project_name = api.get_project_name(task['projectid'])
     return render_template('task_view.html', api=api, project_name=project_name, task=task)
 
