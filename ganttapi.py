@@ -44,7 +44,7 @@ class GanttApi:
 
     def get_backup(self):
         ''' tar up the datadir and return a filepath '''
-        bdir = 'backups'
+        bdir = '/tmp/backups'
         if not os.path.exists(bdir):
             os.makedirs(bdir)
         bfile = os.path.join(
