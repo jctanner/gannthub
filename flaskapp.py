@@ -152,9 +152,9 @@ def add_project():
         kwargs.pop('csrf_token', None)
         kwargs.pop('submit', None)
         api.add_project(**kwargs)
-        return redirect('/')
+        return redirect('/projects/%s' % kwargs['projectid'])
 
-    return render_template('project_add.html', api=api, form=form, today=today_yyyy_mm_dd())
+    return render_template('project_add.html', api=api, form=form, edit=False, today=today_yyyy_mm_dd())
 
 
 @app.route('/deleteproject/<string:projectid>', methods=['GET', 'POST'])
@@ -189,7 +189,7 @@ def edit_project(projectid):
         api.add_project(**kwargs)
         return redirect('/')
 
-    return render_template('project_edit.html', api=api, form=form, projectid=projectid, today=today_yyyy_mm_dd())
+    return render_template('project_edit.html', api=api, form=form, edit=True, projectid=projectid)
 
 
 @app.route('/projects/<string:projectid>')
@@ -219,7 +219,7 @@ def add_task(projectid=None):
         else:
             return redirect('/')
 
-    return render_template('task_add.html', api=api, form=form, today=today_yyyy_mm_dd())
+    return render_template('task_add.html', api=api, form=form, edit=False, today=today_yyyy_mm_dd())
 
 
 @app.route('/edittask/<string:taskid>', methods=['GET', 'POST'])
@@ -229,7 +229,7 @@ def edit_task(taskid):
     form = AddTaskForm(
         projectid=task['projectid'],
         taskid=task['task_id'],
-        projectname=task['task_name'],
+        taskname=task['task_name'],
         resource=task.get('resource_group', ''),
         trackerurl=task.get('tracker_url', ''),
         startdate=task['start_date'],
@@ -248,7 +248,7 @@ def edit_task(taskid):
         api.add_task(**kwargs)
         return redirect('/projects/%s' % task['projectid'])
 
-    return render_template('task_edit.html', api=api, form=form, task=task, today=today_yyyy_mm_dd())
+    return render_template('task_edit.html', api=api, form=form, task=task, edit=True, today=today_yyyy_mm_dd())
 
 
 @app.route('/deletetask/<string:taskid>', methods=['GET', 'POST'])
@@ -263,6 +263,7 @@ def delete_task(taskid):
 @app.route('/tasks/<string:taskid>', methods=['GET', 'POST'])
 def task_view(taskid):
     task = api.get_task(taskid=taskid)
+    '''
     form = AddTaskForm(
         projectid=task['projectid'],
         taskid=taskid,
@@ -276,8 +277,9 @@ def task_view(taskid):
         dependencies=task['dependencies'],
         info=task.get('info')
     )
+    '''
     project_name = api.get_project_name(task['projectid'])
-    return render_template('task_view.html', api=api, project_name=project_name, task=task, form=form)
+    return render_template('task_view.html', api=api, project_name=project_name, task=task)
 
 
 ####################################################
