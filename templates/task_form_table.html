@@ -1,0 +1,62 @@
+<table border="0" width="40%">
+    <tr>
+        <td>{{ form.projectid.label }}</td>
+        <td>{{ form.projectid }}</td>
+    </tr>
+    {% if form.projectname is defined %}
+    <tr>
+        <td>{{ form.projectname.label }}</td>
+        <td>{{ form.projectname }}</td>
+    </tr>
+    {% endif %}
+    <tr>
+        <td>{{ form.resource.label }}</td>
+        <td>{{ form.resource }}</td>
+    </tr>
+    <tr>
+        <td>{{ form.trackerurl.label }}</td>
+        <td>{{ form.trackerurl }}</td>
+    </tr>
+    {% if today is defined %}
+        <tr>
+            <td>{{ form.startdate.label }}</td>
+            <!--<td>{{ form.startdate }}</td>-->
+            <td><input id="startdate" name="startdate" type="text" value="{{today}}"></td>
+        </tr>
+        <tr>
+            <td>{{ form.enddate.label }}</td>
+            <!--<td>{{ form.enddate }}</td>-->
+            <td><input id="enddate" name="enddate" type="text" value="{{today}}"></td>
+        </tr>
+    {% else %}
+        <tr>
+            <td>{{ form.startdate.label }}</td>
+            <td>{{ form.startdate }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.enddate.label }}</td>
+            <td>{{ form.enddate }}</td>
+        </tr>
+    {% endif %}
+    <tr>
+        <td>{{ form.duration.label }}</td>
+        <td>{{ form.duration }}</td>
+    </tr>
+    <tr>
+        <td>{{ form.percentcomplete.label }}</td>
+        <td>{{ form.percentcomplete }}</td>
+    </tr>
+    <tr>
+        <td>{{ form.dependencies.label }}</td>
+        <td>{{ form.dependencies }}</td>
+    </tr>
+    <tr>
+        <td>{{ form.info.label }}</td>
+        <td>{{ form.info }}</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>{{ form.submit }}</td>
+    </tr>
+</table>
+{{ form.csrf_token }}

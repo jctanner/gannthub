@@ -100,7 +100,7 @@ class GanttApi:
             if task.get('project') and task['task_id'] == projectid:
                 return task
 
-    def add_project(self, projectid=None, current_projectid=None, projectname=None, resource=None, trackerurl=None, startdate=None, enddate=None, duration=None, percentcomplete=None, dependencies=None):
+    def add_project(self, projectid=None, current_projectid=None, projectname=None, resource=None, trackerurl=None, startdate=None, enddate=None, duration=None, percentcomplete=None, dependencies=None, info=None):
         
         print('#############################')
         print('current_projectid: %s' % current_projectid)
@@ -150,6 +150,7 @@ class GanttApi:
                 'duration': duration,
                 'percent_complete': percentcomplete or 0,
                 'dependencies': dependencies,
+                'info': info
             }))
         self.load_data()
     
@@ -160,7 +161,7 @@ class GanttApi:
             os.remove(pfile)
         self.load_data()
 
-    def add_task(self, projectid=None, taskid=None, current_taskid=None, taskname=None, resource=None, trackerurl=None, startdate=None, enddate=None, duration=None, percentcomplete=None, dependencies=None):
+    def add_task(self, projectid=None, taskid=None, current_taskid=None, taskname=None, resource=None, trackerurl=None, startdate=None, enddate=None, duration=None, percentcomplete=None, dependencies=None, info=None):
         
         # re-id a task ...
         if current_taskid:
@@ -204,5 +205,6 @@ class GanttApi:
                 'duration': duration,
                 'percent_complete': percentcomplete or 0,
                 'dependencies': dependencies,
+                'info': info
             }))
         self.load_data()

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import copy
+import datetime
 import os
 
 from flask import abort
@@ -26,6 +27,7 @@ from wtforms import IntegerField
 from wtforms import PasswordField
 from wtforms import StringField
 from wtforms import SubmitField
+from wtforms import TextField
 
 from ganttapi import GanttApi
 
@@ -69,6 +71,7 @@ class AddProjectForm(FlaskForm):
     duration = IntegerField(label='duration')
     percentcomplete = IntegerField(label='percent complete')
     dependencies = StringField(label='dependencies')
+    info = TextField(label='info')
     submit = SubmitField(label='save')
 
 
@@ -83,6 +86,7 @@ class AddTaskForm(FlaskForm):
     duration = IntegerField(label='duration')
     percentcomplete = IntegerField(label='percent complete')
     dependencies = StringField(label='dependencies')
+    info = TextField(label='info')
     submit = SubmitField(label='save')
 
 
@@ -95,6 +99,12 @@ def split_ymd(ds, ix=None):
         return ds[ix]
     except IndexError:
         return 0
+
+
+def today_yyyy_mm_dd():
+    now = datetime.datetime.now().isoformat()
+    now = now.split('T')[0]
+    return now
 
 
 @login_manager.user_loader
@@ -144,7 +154,7 @@ def add_project():
         api.add_project(**kwargs)
         return redirect('/')
 
-    return render_template('project_add.html', api=api, form=form)
+    return render_template('project_add.html', api=api, form=form, today=today_yyyy_mm_dd())
 
 
 @app.route('/deleteproject/<string:projectid>', methods=['GET', 'POST'])
@@ -179,7 +189,7 @@ def edit_project(projectid):
         api.add_project(**kwargs)
         return redirect('/')
 
-    return render_template('project_edit.html', api=api, form=form, projectid=projectid)
+    return render_template('project_edit.html', api=api, form=form, projectid=projectid, today=today_yyyy_mm_dd())
 
 
 @app.route('/projects/<string:projectid>')
@@ -209,7 +219,7 @@ def add_task(projectid=None):
         else:
             return redirect('/')
 
-    return render_template('task_add.html', api=api, form=form)
+    return render_template('task_add.html', api=api, form=form, today=today_yyyy_mm_dd())
 
 
 @app.route('/edittask/<string:taskid>', methods=['GET', 'POST'])
@@ -226,7 +236,8 @@ def edit_task(taskid):
         enddate=task['end_date'],
         duration=task['duration'],
         percentcomplete=task.get('percent_complete', 0),
-        dependencies=task['dependencies']
+        dependencies=task['dependencies'],
+        info=task.get('info')
     )
 
     if request.method == 'POST':
@@ -237,7 +248,7 @@ def edit_task(taskid):
         api.add_task(**kwargs)
         return redirect('/projects/%s' % task['projectid'])
 
-    return render_template('task_view.html', api=api, form=form)
+    return render_template('task_view.html', api=api, form=form, today=today_yyyy_mm_dd())
 
 @app.route('/tasks/<string:taskid>', methods=['GET', 'POST'])
 def task_view(taskid):
@@ -252,7 +263,8 @@ def task_view(taskid):
         enddate=task['end_date'],
         duration=task['duration'],
         percentcomplete=task.get('percent_complete', 0),
-        dependencies=task['dependencies']
+        dependencies=task['dependencies'],
+        info=task.get('info')
     )
     return render_template('task_view.html', api=api, task=task, form=form)
 

@@ -1,48 +1,6 @@
 {% include 'header.html' %}
 <h2>Add a new project ...</h2>
 <form method="POST" action="/editproject/{{projectid}}">
-    <table border="0" width="40%">
-        <tr>
-            <td>{{ form.projectid.label }}</td>
-            <td>{{ form.projectid }}</td>
-        </tr>
-        <tr>
-            <td>{{ form.projectname.label }}</td>
-            <td>{{ form.projectname }}</td>
-        </tr>
-        <tr>
-            <td>{{ form.resource.label }}</td>
-            <td>{{ form.resource }}</td>
-        </tr>
-        <tr>
-            <td>{{ form.trackerurl.label }}</td>
-            <td>{{ form.trackerurl }}</td>
-        </tr>
-        <tr>
-            <td>{{ form.startdate.label }}</td>
-            <td>{{ form.startdate }}</td>
-        </tr>
-        <tr>
-            <td>{{ form.enddate.label }}</td>
-            <td>{{ form.enddate }}</td>
-        </tr>
-        <tr>
-            <td>{{ form.duration.label }}</td>
-            <td>{{ form.duration }}</td>
-        </tr>
-        <tr>
-            <td>{{ form.percentcomplete.label }}</td>
-            <td>{{ form.percentcomplete }}</td>
-        </tr>
-        <tr>
-            <td>{{ form.dependencies.label }}</td>
-            <td>{{ form.dependencies }}</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>{{ form.submit }}</td>
-        </tr>
-    </table>
-    {{ form.csrf_token }}
+{% include 'task_form_table.html' %}
 </form>
 {% include 'footer.html' %}
