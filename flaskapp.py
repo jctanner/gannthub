@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import copy
+import os
 
 from flask import abort
 from flask import Flask
@@ -9,6 +10,8 @@ from flask import Response
 from flask import redirect
 from flask import render_template
 from flask import request
+from flask import send_file
+from flask import send_from_directory
 
 from flask_login import LoginManager
 from flask_login import LoginManager
@@ -261,6 +264,17 @@ def task_view(taskid):
 @app.route('/api')
 def api_root():
     return jsonify(['/api/tasks'])
+
+
+@app.route('/api/backup')
+def api_backup():
+    tf = api.get_backup()
+    print(tf)
+    return send_file(tf, as_attachment=True)
+    #return send_from_directory(
+    #    os.path.dirname(tf),
+    #    os.path.basename(tf)
+    #)
 
 
 @app.route('/api/projects')

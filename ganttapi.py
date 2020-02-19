@@ -14,9 +14,11 @@
 }
 """
 
+import datetime
 import glob
 import json
 import os
+import tarfile
 
 
 class GanttApi:
@@ -39,6 +41,24 @@ class GanttApi:
             with open(df, 'r') as f:
                 self.tasks.append(json.loads(f.read()))
         print(self.tasks)
+
+    def get_backup(self):
+        ''' tar up the datadir and return a filepath '''
+        bdir = 'backups'
+        if not os.path.exists(bdir):
+            os.makedirs(bdir)
+        bfile = os.path.join(
+            bdir,
+            'gantt-backup-%s.tar.gz'% \
+                datetime.datetime.now().isoformat()
+        )
+        bfile = bfile.replace(':', '-')
+
+        jfiles = glob.glob('%s/*.json' % self.datadir)
+        with tarfile.open(bfile, 'w:gz') as tar:
+            for jfile in jfiles:
+                tar.add(jfile)
+        return bfile
 
     def get_projects(self):
         if not isinstance(self.tasks, list):
