@@ -8,6 +8,15 @@
         <td>{{ form.projectname.label }}</td>
         <td>{{ form.projectname }}</td>
     </tr>
+    {% else %}
+    <tr>
+        <td>{{ form.taskid.label }}</td>
+        <td>{{ form.taskid }}</td>
+    </tr>
+    <tr>
+        <td>{{ form.taskname.label }}</td>
+        <td>{{ form.taskname }}</td>
+    </tr>
     {% endif %}
     <tr>
         <td>{{ form.resource.label }}</td>

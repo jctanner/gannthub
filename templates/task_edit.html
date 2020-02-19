@@ -1,0 +1,6 @@
+{% include 'header.html' %}
+<h2>Edit task ...</h2>
+<form method="POST" action="/edittask/{{task.task_id}}">
+{% include 'task_form_table.html' %}
+</form>
+{% include 'footer.html' %}

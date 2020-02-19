@@ -248,7 +248,17 @@ def edit_task(taskid):
         api.add_task(**kwargs)
         return redirect('/projects/%s' % task['projectid'])
 
-    return render_template('task_view.html', api=api, form=form, today=today_yyyy_mm_dd())
+    return render_template('task_edit.html', api=api, form=form, task=task, today=today_yyyy_mm_dd())
+
+
+@app.route('/deletetask/<string:taskid>', methods=['GET', 'POST'])
+@login_required
+def delete_task(taskid):
+    task = api.get_task(taskid=taskid)
+    project_name = api.get_project_name(task['projectid'])
+    api.delete_task(taskid=taskid)
+    return redirect('/projects/%s' % task['projectid'])
+
 
 @app.route('/tasks/<string:taskid>', methods=['GET', 'POST'])
 def task_view(taskid):
@@ -266,7 +276,8 @@ def task_view(taskid):
         dependencies=task['dependencies'],
         info=task.get('info')
     )
-    return render_template('task_view.html', api=api, task=task, form=form)
+    project_name = api.get_project_name(task['projectid'])
+    return render_template('task_view.html', api=api, project_name=project_name, task=task, form=form)
 
 
 ####################################################

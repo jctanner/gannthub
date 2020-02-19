@@ -60,6 +60,10 @@ class GanttApi:
                 tar.add(jfile)
         return bfile
 
+    def get_project_name(self, projectid):
+        project = self.get_project(projectid=projectid)
+        return project['task_name']
+
     def get_projects(self):
         if not isinstance(self.tasks, list):
             return []
@@ -207,4 +211,11 @@ class GanttApi:
                 'dependencies': dependencies,
                 'info': info
             }))
+        self.load_data()
+
+    def delete_task(self, taskid=None):
+        task = self.get_task(taskid=taskid)
+        projectid = task['projectid']
+        tfile = os.path.join(self.datadir, 'project_%s_task_%s.json' % (projectid, taskid))
+        os.remove(tfile)
         self.load_data()

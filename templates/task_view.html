@@ -1,6 +1,30 @@
 {% include 'header.html' %}
-<h2>Edit task ...</h2>
-<form method="POST" action="/edittask/{{task.task_id}}">
-{% include 'task_form_table.html' %}
-</form>
+
+<div class="col-sm-6">
+
+    <br>
+    <h2>task: {{ task.task_name}}</h2>
+    <br>
+
+    {% if project_name is defined %}
+    <h4>project: {{ project_name}}</h4>
+    <br>
+    {% endif %}
+
+    {% if task.get('tracker_url') %}
+    <h4>tracker: <a href="{{ task.get('tracker_url')}}">{{ task.get('tracker_url')}}</a></h4>
+    <br>
+    {% endif %}
+
+    {% if task.get('info') %}
+    <p>{{ task.get('info')}}</p>
+    {%  endif %}
+
+    <br>
+    <a class="btn btn-primary" href="/deletetask/{{task.task_id}}">delete</a>
+    <a class="btn btn-primary" href="/edittask/{{task.task_id}}">edit</a>
+    <br>
+
+</div>
+
 {% include 'footer.html' %}
