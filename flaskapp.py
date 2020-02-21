@@ -96,6 +96,8 @@ def split_ymd(ds, ix=None):
     if ix is None:
         return ds
     try:
+        if ix == 1:
+            return str(int(ds[ix])-1)
         return ds[ix]
     except IndexError:
         return 0
