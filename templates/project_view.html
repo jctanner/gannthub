@@ -10,7 +10,7 @@
     <h2>project: {{ project.task_name}}</h2>
 
     {% if project.get('tracker_url') %}
-    <h2>tracker: {{ project.get('tracker_url')}}</h2>
+    <h2>tracker: <a href="{{ project.get('tracker_url')}}">{{ project.get('tracker_url')}}</a></h2>
     {% endif %}
 
     {% if project.get('info') %}
