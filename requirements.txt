@@ -1,0 +1,5 @@
+flask
+flask-login
+flask-markdown
+flask-wtf
+python-Levenshtein

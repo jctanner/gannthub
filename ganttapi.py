@@ -5,7 +5,7 @@
 {
     task_id: <str>              # unique ID for the task
     task_name: <str>            # what will display in the UX
-    start_date: <str>           # YYYY-MM-DD      
+    start_date: <str>           # YYYY-MM-DD
     end_date: <str>             # YYYY-MM-DD
     duration: <int>             # number of days to complete
     percent_complete: <int>     # whole number 0-100
@@ -30,7 +30,7 @@ class GanttApi:
         if datadir:
             self.datadir = datadir
         self.load_data()
-    
+
     def load_data(self):
         if not os.path.exists(self.datadir):
             os.makedirs(self.datadir)
@@ -79,7 +79,7 @@ class GanttApi:
             for task in self.tasks:
                 if task.get('project_id') == projectid and task.get('task_id') == taskid:
                     return task
-        
+
         if projectid:
             return [x for x in self.tasks if x.get('projectid') == projectid]
 
@@ -92,7 +92,7 @@ class GanttApi:
             return self.tasks[:]
 
         return []
-    
+
     def get_task(self, taskid=None):
         for task in self.tasks:
             if task['task_id'] == taskid:
@@ -105,7 +105,7 @@ class GanttApi:
                 return task
 
     def add_project(self, projectid=None, current_projectid=None, projectname=None, resource=None, trackerurl=None, startdate=None, enddate=None, duration=None, percentcomplete=None, dependencies=None, info=None):
-        
+
         print('#############################')
         print('current_projectid: %s' % current_projectid)
         print('new_projectid: %s' % projectid)
@@ -140,7 +140,6 @@ class GanttApi:
                     with open(nf, 'w') as f:
                         f.write(json.dumps(jdata, indent=2, sort_keys=True))
 
-        
         fn = os.path.join(self.datadir, 'project_%s.json' % projectid)
         with open(fn, 'w') as f:
             f.write(json.dumps({
@@ -157,7 +156,7 @@ class GanttApi:
                 'info': info
             }))
         self.load_data()
-    
+
     def delete_project(self, projectid=None):
         pfiles = glob.glob('%s/project_%s*' % (self.datadir, projectid))
         for pfile in pfiles:
@@ -166,7 +165,7 @@ class GanttApi:
         self.load_data()
 
     def add_task(self, projectid=None, taskid=None, current_taskid=None, taskname=None, resource=None, trackerurl=None, startdate=None, enddate=None, duration=None, percentcomplete=None, dependencies=None, info=None):
-        
+
         # re-id a task ...
         if current_taskid:
             fn = os.path.join(self.datadir, 'project_%s_task_%s.json' % (projectid, current_taskid))
@@ -194,7 +193,7 @@ class GanttApi:
                     nf = os.path.join(self.datadir, 'project_%s_task_%s.json' % (jdata['projectid'], jdata['task_id']))
                     with open(nf, 'w') as f:
                         f.write(json.dumps(jdata, indent=2, sort_keys=True))
-        
+
         fn = os.path.join(self.datadir, 'project_%s_task_%s.json' % (projectid, taskid))
         with open(fn, 'w') as f:
             f.write(json.dumps({
