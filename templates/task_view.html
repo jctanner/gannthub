@@ -3,13 +3,17 @@
 <div class="col-sm-6">
 
     <br>
-    <h2>task: {{ task.task_name}}</h2>
+    <h2>{{ task.task_name}}</h2>
     <br>
 
     {% if project_name is defined %}
-    <h4>project: {{ project_name}}</h4>
+    <h4>project: {{ project_name }}</h4>
     <br>
     {% endif %}
+
+    <h4>start: {{ task.start_date }}</h4>
+    <h4>stop: {{ task.end_date }}</h4>
+
 
     {% if task.get('tracker_url') %}
     <h4>tracker: <a href="{{ task.get('tracker_url')}}">{{ task.get('tracker_url')}}</a></h4>

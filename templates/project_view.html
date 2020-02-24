@@ -5,12 +5,15 @@
     <div id="chart_div" class="col-lg-12"></div>
 {% endif %}
 
-<div class="col-sm-6">
+<div class="col-lg-12">
 
-    <h2>project: {{ project.task_name}}</h2>
+    <h2>{{ project.task_name}}</h2>
+
+    <h4>start: {{ project.start_date}}</h4>
+    <h4>stop: {{ project.end_date}}</h4>
 
     {% if project.get('tracker_url') %}
-    <h2>tracker: <a href="{{ project.get('tracker_url')}}">{{ project.get('tracker_url')}}</a></h2>
+    <h4>tracker: <a href="{{ project.get('tracker_url')}}">{{ project.get('tracker_url')}}</a></h4>
     {% endif %}
 
     {% if project.get('info') %}
@@ -18,31 +21,41 @@
     {%  endif %}
 
     <br>
-    <a class="btn btn-primary" href="/addtask/{{project.task_id}}">add task</a>
-    <a class="btn btn-primary" href="/editproject/{{project.task_id}}">edit</a>
-    <a class="btn btn-primary" href="/deleteproject/{{project.task_id}}">delete</a>
+    <div>
+        <a class="btn btn-primary" href="/addtask/{{project.task_id}}">add task</a>
+        <a class="btn btn-primary" href="/editproject/{{project.task_id}}">edit</a>
+        <a class="btn btn-primary" href="/deleteproject/{{project.task_id}}">delete</a>
+    </div>
     <br>
-    <br>
-    <table class="table table-striped table-hover table-sm">
-        <thead class="thead-dark">
+
+    <table id="csv_table" class="display">
+        <thead>
             <tr>
                 <th scope="col">task</th>
                 <th scope="col">resource</th>
                 <th scope="col">complete %</th>
-                <th scope="col">tracker</th>
+                <th scope="col">tracker</th>  
             </tr>
         </thead>
         <tbody>
-        {% for task in tasks %}
+            {% for task in tasks %}
             <tr>
                 <td><a href='/tasks/{{ task.task_id }}'>{{ task.task_name }}</a></td>
                 <td>{{task.get('resource_group')}}</td>
                 <td>{{task.get('percent_complete')}}</td>
                 <td><a href='{{task.get("tracker_url")}}'>{{task.get("tracker_url")}}</a></td>
             </tr>
-        {% endfor %}
+            {% endfor %}
         </tbody>
     </table>
+
+    <script>
+        $(document).ready( function () {
+            $('#csv_table').DataTable({
+                "pageLength": 50
+            });
+        } );
+    </script>
 
 </div>
 
